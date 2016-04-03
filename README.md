@@ -4,21 +4,21 @@ A very simple wrapper library for the ffmpeg executable for Linux. It supports f
 
 ## Code Example
 
-The following excerp for the supplied [test](test_wrapper.cpp) show the basic flow for using the wrapper:
+The following excerpt for the supplied [test](test_wrapper.cpp) show the basic flow for using the wrapper:
 ```c++
   ffmpeg_wrapper::FFMpegWrapper muxer(
       std::make_unique<InputFileReader>(
-          opt_map[OPT_INPUT_VIDEO_FILE].as<std::string>()),
+          input_video_file_path),
       {"-f", "h264", "-r", "25", "-probesize", "1024"},
       std::make_unique<InputFileReader>(
-          opt_map[OPT_INPUT_AUDIO_FILE].as<std::string>()),
+          input_audio_file_path),
       {"-f", "flac"},
       std::make_unique<OutputFileWriter>(
-          opt_map[OPT_OUTPUT_FILE].as<std::string>()),
+          output_file_path),
       {"-vcodec", "copy", "-f", "mp4", "-reset_timestamps", "1",
           "-movflags", "empty_moov+default_base_moof+frag_keyframe"});
 ```
-The InputFileReader and OutputFileWriter classes are functor that you need to supply. The library takes care of managing the process and the pipe. Take care with locks in the functors because you can easily encounter deadlocks with the ffmpeg process.
+The InputFileReader and OutputFileWriter classes are functor that you need to supply. In this example, the wrapper takes a h264 video file with a flac audio file, muxes the video and transcodes the audio to a framented mp4 file using ffmpeg. The library takes care of managing the process and the pipe. Take care with locks in the functors because you can easily encounter deadlocks with the ffmpeg process.
 
 ## Motivation
 
